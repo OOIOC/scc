@@ -41,56 +41,112 @@
 <body>
   <h2>生成你的篆刻印章</h2>
   
+  <!-- 章型号选择 -->
+  <select id="stampType">
+    <option value="font">字体章</option>
+    <option value="pattern">图案章</option>
+  </select>
+
   <!-- 用户输入姓名 -->
   <input type="text" id="nameInput" placeholder="请输入名字" />
-  
-  <!-- 选择印章样式 -->
-  <select id="stampStyle">
-    <option value="circle">圆形印章</option>
-    <option value="square">方形印章</option>
+
+  <!-- 字体选择 -->
+  <select id="fontSelect">
+    <option value="KaiTi">楷体</option>
+    <option value="STKaiti">宋体</option>
   </select>
-  
+
+  <!-- 文字排列选择 -->
+  <select id="layoutSelect">
+    <option value="horizontal">横排</option>
+    <option value="vertical">竖排</option>
+  </select>
+
   <!-- 实时展示印章 -->
   <div id="stamp">印章</div>
   
-  <!-- 下载按钮 -->
-  <button id="downloadBtn">下载印章</button>
+  <!-- 下载SVG按钮 -->
+  <button id="downloadBtn">下载SVG</button>
   
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@0.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js2svg@1.2.0/js2svg.min.js"></script>
   <script>
     const nameInput = document.getElementById("nameInput");
     const stamp = document.getElementById("stamp");
-    const stampStyle = document.getElementById("stampStyle");
+    const stampType = document.getElementById("stampType");
+    const fontSelect = document.getElementById("fontSelect");
+    const layoutSelect = document.getElementById("layoutSelect");
     const downloadBtn = document.getElementById("downloadBtn");
 
     // 实时更新印章内容
-    nameInput.addEventListener("input", () => {
+    nameInput.addEventListener("input", updateStamp);
+    stampType.addEventListener("change", updateStamp);
+    fontSelect.addEventListener("change", updateStamp);
+    layoutSelect.addEventListener("change", updateStamp);
+
+    function updateStamp() {
       const name = nameInput.value || "印章";
-      stamp.textContent = name;
-    });
+      const font = fontSelect.value;
+      const layout = layoutSelect.value;
 
-    // 修改印章样式（圆形或方形）
-    stampStyle.addEventListener("change", () => {
-      if (stampStyle.value === "circle") {
-        stamp.style.borderRadius = "50%";
-        stamp.style.width = "200px";
-        stamp.style.height = "200px";
+      // 设置字体
+      stamp.style.fontFamily = font;
+      
+      // 设置文字排列方式
+      if (layout === "vertical") {
+        stamp.style.writingMode = "vertical-rl";
       } else {
-        stamp.style.borderRadius = "0";
-        stamp.style.width = "200px";
-        stamp.style.height = "200px";
+        stamp.style.writingMode = "horizontal-tb";
       }
+
+      // 显示姓名
+      stamp.textContent = name;
+    }
+
+    // 下载SVG文件
+    downloadBtn.addEventListener("click", () => {
+      const svg = createSVG();
+      const svgBlob = new Blob([svg], { type: "image/svg+xml" });
+      const svgUrl = URL.createObjectURL(svgBlob);
+      
+      const link = document.createElement("a");
+      link.download = "stamp.svg";
+      link.href = svgUrl;
+      link.click();
     });
 
-    // 下载印章为图片
-    downloadBtn.addEventListener("click", () => {
-      html2canvas(stamp).then(canvas => {
-        const link = document.createElement("a");
-        link.download = "stamp.png";
-        link.href = canvas.toDataURL();
-        link.click();
+    // 创建SVG格式
+    function createSVG() {
+      const svg = new js2svg();
+      svg.setAttributes({
+        width: "200",
+        height: "200",
+        xmlns: "http://www.w3.org/2000/svg",
+        viewBox: "0 0 200 200"
       });
-    });
+
+      const rect = svg.addElement("rect", {
+        x: 10,
+        y: 10,
+        width: 180,
+        height: 180,
+        fill: "white",
+        stroke: "#B22222",
+        strokeWidth: "6"
+      });
+
+      const text = svg.addElement("text", {
+        x: "50%",
+        y: "50%",
+        fontSize: "48",
+        fill: "#B22222",
+        textAnchor: "middle",
+        dominantBaseline: "middle"
+      });
+
+      text.textContent = stamp.textContent;
+      
+      return svg.render();
+    }
   </script>
 </body>
 </html>
