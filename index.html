@@ -54,19 +54,21 @@
   <select id="fontSelect">
     <option value="KaiTi">楷体</option>
     <option value="STKaiti">宋体</option>
+    <!-- 更多字体可以在这里添加 -->
   </select>
 
   <!-- 文字排列选择 -->
   <select id="layoutSelect">
-    <option value="horizontal">横排</option>
-    <option value="vertical">竖排</option>
+    <option value="rectangle">传统矩形印章</option>
+    <option value="horizontal">横向排列</option>
+    <option value="vertical">竖向排列</option>
   </select>
 
   <!-- 实时展示印章 -->
   <div id="stamp">印章</div>
   
   <!-- 下载SVG按钮 -->
-  <button id="downloadBtn">下载SVG</button>
+  <button id="downloadBtn">下载印章SVG</button>
   
   <script src="https://cdn.jsdelivr.net/npm/js2svg@1.2.0/js2svg.min.js"></script>
   <script>
@@ -94,6 +96,8 @@
       // 设置文字排列方式
       if (layout === "vertical") {
         stamp.style.writingMode = "vertical-rl";
+      } else if (layout === "horizontal") {
+        stamp.style.writingMode = "horizontal-tb";
       } else {
         stamp.style.writingMode = "horizontal-tb";
       }
