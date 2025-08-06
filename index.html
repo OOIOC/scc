@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>我的印章</title>
+  <style>
+    body {
+      font-family: "STKaiti", "KaiTi", serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 50px;
+      background-color: #f8f8f8;
+    }
+
+    input {
+      font-size: 24px;
+      padding: 10px;
+      margin-bottom: 30px;
+      width: 200px;
+      text-align: center;
+    }
+
+    #stamp {
+      width: 200px;
+      height: 200px;
+      border: 6px solid #b22222;
+      color: #b22222;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      writing-mode: vertical-rl;
+      font-family: "STKaiti", "KaiTi", serif;
+      background: #fff;
+    }
+
+    button {
+      margin-top: 30px;
+      padding: 10px 20px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>输入名字，生成你的印章</h2>
+  <input type="text" id="nameInput" placeholder="如：张三" />
+  <div id="stamp">印章</div>
+  <button onclick="download()">保存图片</button>
+
+  <script>
+    const input = document.getElementById("nameInput");
+    const stamp = document.getElementById("stamp");
+
+    input.addEventListener("input", () => {
+      stamp.textContent = input.value || "印章";
+    });
+
+    function download() {
+      html2canvas(stamp).then(canvas => {
+        const link = document.createElement("a");
+        link.download = "my_stamp.png";
+        link.href = canvas.toDataURL();
+        link.click();
+      });
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+</body>
+
+</html>
