@@ -59,7 +59,7 @@
 
   <!-- 文字排列选择 -->
   <select id="layoutSelect">
-    <option value="rectangle">传统矩形印章</option>
+    <option value="rectangle">矩形排列</option>
     <option value="horizontal">横向排列</option>
     <option value="vertical">竖向排列</option>
   </select>
@@ -70,7 +70,6 @@
   <!-- 下载SVG按钮 -->
   <button id="downloadBtn">下载印章SVG</button>
   
-  <script src="https://cdn.jsdelivr.net/npm/js2svg@1.2.0/js2svg.min.js"></script>
   <script>
     const nameInput = document.getElementById("nameInput");
     const stamp = document.getElementById("stamp");
@@ -96,10 +95,13 @@
       // 设置文字排列方式
       if (layout === "vertical") {
         stamp.style.writingMode = "vertical-rl";
+        stamp.style.textAlign = "center";
       } else if (layout === "horizontal") {
         stamp.style.writingMode = "horizontal-tb";
+        stamp.style.textAlign = "center";
       } else {
         stamp.style.writingMode = "horizontal-tb";
+        stamp.style.textAlign = "center";
       }
 
       // 显示姓名
@@ -120,36 +122,36 @@
 
     // 创建SVG格式
     function createSVG() {
-      const svg = new js2svg();
-      svg.setAttributes({
-        width: "200",
-        height: "200",
-        xmlns: "http://www.w3.org/2000/svg",
-        viewBox: "0 0 200 200"
-      });
+      const svgNamespace = "http://www.w3.org/2000/svg";
+      const svg = document.createElementNS(svgNamespace, "svg");
+      svg.setAttribute("width", "200");
+      svg.setAttribute("height", "200");
+      svg.setAttribute("xmlns", svgNamespace);
+      svg.setAttribute("viewBox", "0 0 200 200");
 
-      const rect = svg.addElement("rect", {
-        x: 10,
-        y: 10,
-        width: 180,
-        height: 180,
-        fill: "white",
-        stroke: "#B22222",
-        strokeWidth: "6"
-      });
+      // 创建矩形框架
+      const rect = document.createElementNS(svgNamespace, "rect");
+      rect.setAttribute("x", "10");
+      rect.setAttribute("y", "10");
+      rect.setAttribute("width", "180");
+      rect.setAttribute("height", "180");
+      rect.setAttribute("fill", "white");
+      rect.setAttribute("stroke", "#B22222");
+      rect.setAttribute("stroke-width", "6");
+      svg.appendChild(rect);
 
-      const text = svg.addElement("text", {
-        x: "50%",
-        y: "50%",
-        fontSize: "48",
-        fill: "#B22222",
-        textAnchor: "middle",
-        dominantBaseline: "middle"
-      });
-
+      // 创建文本
+      const text = document.createElementNS(svgNamespace, "text");
+      text.setAttribute("x", "50%");
+      text.setAttribute("y", "50%");
+      text.setAttribute("font-size", "48");
+      text.setAttribute("fill", "#B22222");
+      text.setAttribute("text-anchor", "middle");
+      text.setAttribute("dominant-baseline", "middle");
       text.textContent = stamp.textContent;
-      
-      return svg.render();
+
+      svg.appendChild(text);
+      return svg.outerHTML;
     }
   </script>
 </body>
